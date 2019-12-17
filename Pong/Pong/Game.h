@@ -3,6 +3,10 @@
 
 #include "SDL.h"
 #include <cmath>
+#include "Actor.h"
+#include "Component.h"
+#include <vector>
+#include "Commons.h"
 
 class Game {
 public:
@@ -19,6 +23,9 @@ private:
 	void UpdateGame();
 	void GenerateOutput();
 
+	void AddActor(Actor* actor);
+	void RemoveActor(Actor* actor);
+
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
 
@@ -28,11 +35,7 @@ private:
 	Uint32 mTicksCount;
 
 	bool mIsRunning = false;
-
-	struct Vector2 {
-		float x;
-		float y;
-	};
+	bool mUpdatingActors;
 
 	Vector2 mBallPos;
 
@@ -43,6 +46,9 @@ private:
 	int mRightPaddleDirection;
 
 	Vector2 mBallVelocity;
+
+	std::vector<Actor*> mActors;
+	std::vector<Actor*> mPendingActors;
 };
 
 #endif // !GAME_H

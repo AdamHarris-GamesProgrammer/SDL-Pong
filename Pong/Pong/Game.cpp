@@ -110,6 +110,30 @@ void Game::UpdateGame()
 
 	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
 
+	mUpdatingActors = true;
+	for (auto actor : mActors) {
+		actor->Update(deltaTime);
+	}
+
+	mUpdatingActors = false;
+
+	for (auto pending : mPendingActors) {
+		mActors.emplace_back(pending);
+	}
+	mPendingActors.clear();
+
+	std::vector<Actor*> deadActors;
+
+	for (auto actor : mActors) {
+		if (actor->GetState() == Actor::EDead) {
+			deadActors.emplace_back(actor);
+		}
+	}
+
+	for (auto actor : deadActors) {
+		delete actor;
+	}
+
 	mTicksCount = SDL_GetTicks();
 
 	if (deltaTime > 0.05f) {
@@ -215,5 +239,35 @@ void Game::GenerateOutput()
 	SDL_RenderFillRect(mRenderer, &ball);
 
 	SDL_RenderPresent(mRenderer);
+}
+
+void Game::AddActor(Actor* actor)
+{
+	if (mUpdatingActors) {
+		mPendingActors.emplace_back(actor);
+	}
+	else {
+		mActors.emplace_back(actor);
+	}
+}
+
+void Game::RemoveActor(Actor* actor)
+{
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
+	}
+
+	// Is it in actors?
+	iter = std::find(mActors.begin(), mActors.end(), actor);
+	if (iter != mActors.end())
+	{
+		// Swap to end of vector and pop off (avoid erase copies)
+		std::iter_swap(iter, mActors.end() - 1);
+		mActors.pop_back();
+	}
 }
 

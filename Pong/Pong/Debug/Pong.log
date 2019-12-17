@@ -1,2 +1,5 @@
 ﻿  Game.cpp
-  Pong.vcxproj -> C:\Users\Adam\Documents\GitHub\SDL-Pong\Pong\Debug\Pong.exe
+  Source.cpp
+  Generating Code...
+Game.obj : error LNK2019: unresolved external symbol "public: void __thiscall Actor::Update(float)" (?Update@Actor@@QAEXM@Z) referenced in function "private: void __thiscall Game::UpdateGame(void)" (?UpdateGame@Game@@AAEXXZ)
+C:\Users\Adam\Documents\GitHub\SDL-Pong\Pong\Debug\Pong.exe : fatal error LNK1120: 1 unresolved externals
